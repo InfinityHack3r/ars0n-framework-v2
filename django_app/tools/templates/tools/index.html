@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ars0n Tool Console</title>
+  <link rel="stylesheet" href="/static/tools/styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1>Ars0n Tool Console</h1>
+      <p>Launch and monitor reconnaissance tooling from a unified Django wrapper.</p>
+    </div>
+    <div class="summary">
+      <span class="pill">{{ tools|length }} tools</span>
+      <span class="pill">Docker-backed</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    {% for tool in tools %}
+      <section class="card">
+        <div class="card-header">
+          <h2>{{ tool.name }}</h2>
+          <span class="slug">{{ tool.slug }}</span>
+        </div>
+        <p>{{ tool.description }}</p>
+        <div class="card-footer">
+          <code>{{ tool.command }}</code>
+          <a class="button" href="/tools/{{ tool.slug }}/">Open Console</a>
+        </div>
+      </section>
+    {% endfor %}
+  </main>
+</body>
+</html>
