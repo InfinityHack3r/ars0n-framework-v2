@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ tool.name }} Console</title>
+  <link rel="stylesheet" href="/static/tools/styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <a class="back-link" href="/">← Back to tools</a>
+      <h1>{{ tool.name }} Console</h1>
+      <p>{{ tool.description }}</p>
+    </div>
+    <div class="summary">
+      <span class="pill">{{ tool.slug }}</span>
+      <span class="pill">Docker container ready</span>
+    </div>
+  </header>
+
+  <main class="detail-layout">
+    <section class="panel">
+      <h2>Command Settings</h2>
+      <form class="settings-form">
+        {% for setting in tool.settings %}
+          <label>
+            <span>{{ setting.label }}</span>
+            <input type="text" name="{{ setting.name }}" placeholder="{{ setting.placeholder }}" />
+          </label>
+        {% endfor %}
+        <label>
+          <span>Command Preview</span>
+          <input type="text" value="{{ tool.command }}" readonly />
+        </label>
+        <button type="button" class="button">Queue Command</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Execution Console</h2>
+      <div class="console">
+        <div class="console-header">
+          <span>Session output will appear here.</span>
+          <button type="button" class="ghost-button">Clear</button>
+        </div>
+        <pre>
+$ {{ tool.command }}
+[waiting] Container is idle. Start a run to capture output.
+        </pre>
+      </div>
+      <div class="actions">
+        <button type="button" class="button">Start Run</button>
+        <button type="button" class="ghost-button">Stop Run</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

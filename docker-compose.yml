@@ -72,6 +72,60 @@ services:
     networks:
       - ars0n-network
 
+  django:
+    container_name: ars0n-framework-v2-django-1
+    build:
+      context: .
+      dockerfile: django_app/Dockerfile
+    environment:
+      POSTGRES_DB: ars0n_django
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: django_db
+      POSTGRES_PORT: 5432
+      DJANGO_ALLOWED_HOSTS: "*"
+      DJANGO_DEBUG: "false"
+    depends_on:
+      django_db:
+        condition: service_healthy
+    volumes:
+      - django_static:/app/staticfiles
+    restart: unless-stopped
+    networks:
+      - ars0n-network
+
+  django_db:
+    container_name: ars0n-framework-v2-django-db-1
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ars0n_django
+    volumes:
+      - django_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - ars0n-network
+
+  nginx:
+    container_name: ars0n-framework-v2-django-nginx-1
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    depends_on:
+      - django
+    volumes:
+      - ./django_app/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - django_static:/static:ro
+    restart: unless-stopped
+    networks:
+      - ars0n-network
+
   assetfinder:
     container_name: ars0n-framework-v2-assetfinder-1
     build: ./docker/assetfinder
@@ -278,6 +332,8 @@ services:
 volumes:
   postgres_data:
   temp_data:
+  django_postgres_data:
+  django_static:
 
 networks:
   ars0n-network:
