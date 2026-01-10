@@ -1,0 +1,175 @@
+================================================================================
+DOCKER COMMANDS USED IN ARS0N FRAMEWORK V2
+================================================================================
+
+SUBLIST3R
+---------
+docker exec ars0n-framework-v2-sublist3r-1 python /app/sublist3r.py -d <domain> -v -t 50 -o /dev/stdout
+
+
+ASSETFINDER
+-----------
+docker exec ars0n-framework-v2-assetfinder-1 assetfinder --subs-only <domain>
+
+
+SUBFINDER
+---------
+docker exec ars0n-framework-v2-subfinder-1 subfinder -d <domain> -silent
+
+
+HTTPX
+-----
+docker exec ars0n-framework-v2-httpx-1 httpx -l /tmp/httpx-<scan_id>/domains.txt -json -status-code -title -tech-detect -server -content-length -no-color -timeout 10 -retries 2 -rate-limit <rate> -mc 100,101,200,201,202,203,204,205,206,207,208,226,300,301,302,303,304,305,307,308,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,421,422,423,424,426,428,429,431,451,500,501,502,503,504,505,506,507,508,510,511 -H "User-Agent: <custom_ua>" -H "<custom_header>" -o /tmp/httpx-<scan_id>/httpx-output.json
+
+
+DNSX
+----
+docker exec -i ars0n-framework-v2-dnsx-1 dnsx -a -aaaa -cname -mx -ns -txt -ptr -srv -re -j -retry 3
+
+
+KATANA
+------
+docker exec ars0n-framework-v2-katana-1 katana -u <url> -d 5 -jc -kf all -silent -nc
+
+
+LINKFINDER
+----------
+docker exec ars0n-framework-v2-linkfinder-1 python3 linkfinder.py -i <url> -o cli
+
+
+WAYBACKURLS
+-----------
+docker exec ars0n-framework-v2-waybackurls-1 waybackurls <url>
+
+
+FFUF
+----
+docker exec ars0n-framework-v2-ffuf-1 ffuf -w <wordlist_path> -u <url_with_FUZZ> -mc 200,301,302,307,401,403 -o /tmp/ffuf-output.json -of json -ac -c -r -t <threads> -timeout 30
+docker exec ars0n-framework-v2-ffuf-1 cat /tmp/ffuf-output.json
+
+
+GOSPIDER
+--------
+docker exec ars0n-framework-v2-gospider-1 timeout 300 gospider -s <url> -c 10 -d 3 -t 3 -k 1 -K 2 -m 30 --blacklist ".(jpg|jpeg|gif|css|tif|tiff|png|ttf|woff|woff2|ico|svg)" -a -w -r --js --sitemap --robots --debug --json -v --user-agent "<custom_ua>" --header "<custom_header>"
+
+
+SUBDOMAINIZER
+-------------
+docker exec ars0n-framework-v2-subdomainizer-1 timeout 300 python3 SubDomainizer.py -u <url> -k -o /tmp/subdomainizer-mounts/output.txt -sop /tmp/subdomainizer-mounts/secrets.txt
+docker exec ars0n-framework-v2-subdomainizer-1 chmod 777 /tmp/subdomainizer-mounts
+docker exec ars0n-framework-v2-subdomainizer-1 rm -rf /tmp/subdomainizer-mounts
+
+
+SHUFFLEDNS
+----------
+docker exec ars0n-framework-v2-shuffledns-1 shuffledns -d <wordlist_file> -w /app/wordlists/all.txt -r /app/wordlists/resolvers.txt -silent -massdns /usr/local/bin/massdns -t <rate_limit> -mode bruteforce
+
+
+CEWL
+----
+docker exec ars0n-framework-v2-cewl-1 timeout 600 ruby /app/cewl.rb <url> -d 2 -m 5 -c --with-numbers --ua "<custom_user_agent>"
+
+
+NUCLEI
+------
+docker exec ars0n-framework-v2-nuclei-1 mkdir -p /custom_templates
+docker exec -i ars0n-framework-v2-nuclei-1 nuclei <args>
+docker exec ars0n-framework-v2-nuclei-1 cat /output.jsonl
+docker exec ars0n-framework-v2-nuclei-1 rm -f /targets.txt /output.jsonl
+docker exec ars0n-framework-v2-nuclei-1 rm /output.json
+docker exec ars0n-framework-v2-nuclei-1 rm /tech-output.json
+docker exec ars0n-framework-v2-nuclei-1 ls /app/screenshots/
+docker exec ars0n-framework-v2-nuclei-1 cat /app/screenshots/<filename>
+docker exec ars0n-framework-v2-nuclei-1 rm -rf /app/screenshots/*
+docker cp <host_temp_file> ars0n-framework-v2-nuclei-1:/custom_templates/custom_<N>.yaml
+docker cp <host_targets_file> ars0n-framework-v2-nuclei-1:/targets.txt
+docker cp ars0n-framework-v2-nuclei-1:/output.jsonl <host_output_file>
+
+
+GITHUB-RECON
+------------
+docker ps --filter name=ars0n-framework-v2-github-recon-1 --format "{{.Status}}"
+docker exec ars0n-framework-v2-github-recon-1 ls -la /app/github-search
+docker exec ars0n-framework-v2-github-recon-1 ls -la /app/github-search/github-endpoints.py
+docker exec ars0n-framework-v2-github-recon-1 python3 /app/github-search/github-endpoints.py -h
+docker exec ars0n-framework-v2-github-recon-1 python3 -u /app/github-search/github-endpoints.py -d <domain> -t <api_key>
+
+
+CLOUD_ENUM
+----------
+docker exec ars0n-framework-v2-cloud_enum-1 test -f /app/rs0nfuzz.txt
+docker exec ars0n-framework-v2-cloud_enum-1 sh -c 'cat > <script_path> << EOF\n<script_content>\nEOF'
+docker exec ars0n-framework-v2-cloud_enum-1 rm -f <tempfile>
+docker cp <host_config> ars0n-framework-v2-cloud_enum-1:<dest_path>
+docker cp ars0n-framework-v2-cloud_enum-1:<container_file> <host_temp_file>
+
+
+METABIGOR
+---------
+echo '<company_name>' | /usr/bin/docker exec -i ars0n-framework-v2-metabigor-1 metabigor net --org -v
+echo '<company_name>' | /usr/bin/docker exec -i ars0n-framework-v2-metabigor-1 metabigor netd --org
+echo '<asn_number>' | /usr/bin/docker exec -i ars0n-framework-v2-metabigor-1 metabigor net --asn
+echo '<asn_number>' | /usr/bin/docker exec -i ars0n-framework-v2-metabigor-1 metabigor netd --asn
+echo '<ip_list>' | /usr/bin/docker exec -i ars0n-framework-v2-metabigor-1 metabigor ip -open
+echo '<ip_list>' | /usr/bin/docker exec -i ars0n-framework-v2-metabigor-1 metabigor ipc --json
+
+
+AMASS
+-----
+docker run --rm caffix/amass enum -active -alts -brute -nocolor -min-for-recursive 2 -timeout 60 -d <domain> -r 8.8.8.8 -r 1.1.1.1 -r 9.9.9.9 -r 64.6.64.6 -r 208.67.222.222 -r 208.67.220.220 -r 8.26.56.26 -r 8.20.247.20 -r 185.228.168.9 -r 185.228.169.9 -r 76.76.19.19 -r 76.223.122.150 -r 198.101.242.72 -r 176.103.130.130 -r 176.103.130.131 -r 94.140.14.14 -r 94.140.15.15 -r 1.0.0.1 -r 77.88.8.8 -r 77.88.8.1 -rqps <rate_limit>
+docker run --rm caffix/amass intel -org <company_name> -whois -active -timeout 120
+
+
+================================================================================
+WORDLISTS
+================================================================================
+
+SHUFFLEDNS - SUBDOMAIN WORDLIST
+/home/user/ars0n-framework-v2/docker/shuffledns/wordlists/all.txt
+Container path: /app/wordlists/all.txt
+
+SHUFFLEDNS - DNS RESOLVERS
+/home/user/ars0n-framework-v2/docker/shuffledns/wordlists/resolvers.txt
+Container path: /app/wordlists/resolvers.txt
+
+FFUF - DIRECTORY/FILE FUZZING
+/home/user/ars0n-framework-v2/wordlists/ffuf-wordlist-5000.txt
+Container path: (uploaded dynamically)
+
+
+================================================================================
+DNS RESOLVERS (Used by Amass)
+================================================================================
+
+8.8.8.8           (Google)
+1.1.1.1           (Cloudflare)
+9.9.9.9           (Quad9)
+64.6.64.6         (Verisign)
+208.67.222.222    (OpenDNS)
+208.67.220.220    (OpenDNS)
+8.26.56.26        (Comodo)
+8.20.247.20       (Comodo)
+185.228.168.9     (CleanBrowsing)
+185.228.169.9     (CleanBrowsing)
+76.76.19.19       (Alternate DNS)
+76.223.122.150    (Alternate DNS)
+198.101.242.72    (Alternate DNS)
+176.103.130.130   (AdGuard)
+176.103.130.131   (AdGuard)
+94.140.14.14      (AdGuard)
+94.140.15.15      (AdGuard)
+1.0.0.1           (Cloudflare)
+77.88.8.8         (Yandex)
+77.88.8.1         (Yandex)
+
+
+================================================================================
+SUMMARY
+================================================================================
+
+Total Tools: 18
+Total Docker Exec Commands: 48
+Total Docker CP Commands: 5
+Total Docker Run Commands: 2
+Total Wordlist Files: 3
+Total DNS Resolvers: 20
